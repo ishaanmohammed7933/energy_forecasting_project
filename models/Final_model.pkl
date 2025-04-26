@@ -1,0 +1,24 @@
+# 1. Import Libraries
+import pandas as pd
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+
+# 2. Load Your Feature-Engineered Dataset
+data = pd.read_csv('../data/energy_consumption_features.csv', index_col='timestamp', parse_dates=True)
+
+# 3. Separate Features and Target
+X = data.drop('energy_consumption', axis=1)
+y = data['energy_consumption']
+
+# 4. Train-Test Split (Important: no shuffle for time series)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+
+# 5. Train a Random Forest Model
+model = RandomForestRegressor()
+model.fit(X_train, y_train)
+
+# 6. Save the Model
+joblib.dump(model, '../models/final_model.pkl')
+
+print("✅ Model saved successfully at '../models/final_model.pkl'")

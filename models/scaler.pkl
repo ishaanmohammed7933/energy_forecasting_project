@@ -1,0 +1,32 @@
+# 1. Import Libraries
+import pandas as pd
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import StandardScaler
+
+# 2. Load Feature-Engineered Data
+data = pd.read_csv('../data/energy_consumption_features.csv', index_col='timestamp', parse_dates=True)
+
+# 3. Separate Features and Target
+X = data.drop('energy_consumption', axis=1)
+y = data['energy_consumption']
+
+# 4. Apply Scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 5. Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, shuffle=False)
+
+# 6. Train the Model
+model = RandomForestRegressor()
+model.fit(X_train, y_train)
+
+# 7. Save the Trained Model
+joblib.dump(model, '../models/final_model.pkl')
+
+# 8. Save the Scaler
+joblib.dump(scaler, '../models/scaler.pkl')
+
+print("✅ Model and Scaler saved successfully!")
